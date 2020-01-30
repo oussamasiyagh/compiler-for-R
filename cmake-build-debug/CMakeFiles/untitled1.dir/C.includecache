@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/macbook/Documents/untitled1/analyseur_lexical.c
+analyseur_lexical.h
+/Users/macbook/Documents/untitled1/analyseur_lexical.h
+
+/Users/macbook/Documents/untitled1/analyseur_lexical.h
+main.h
+/Users/macbook/Documents/untitled1/main.h
+
+/Users/macbook/Documents/untitled1/main.c
+analyseur_lexical.h
+/Users/macbook/Documents/untitled1/analyseur_lexical.h
+
+/Users/macbook/Documents/untitled1/main.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+
