@@ -84,6 +84,9 @@
 		<Unit filename="/Users/macbook/Documents/untitled1/analyseur_lexical.h">
 			<Option target="untitled1"/>
 		</Unit>
+		<Unit filename="/Users/macbook/Documents/untitled1/analyseur_syntaxique.c">
+			<Option target="untitled1"/>
+		</Unit>
 		<Unit filename="/Users/macbook/Documents/untitled1/main.c">
 			<Option target="untitled1"/>
 		</Unit>
