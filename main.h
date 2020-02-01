@@ -55,6 +55,7 @@ typedef enum{
     CURO_TOKEN,
     CURF_TOKEN,
     NUM_TOKEN,
+    BREAK_TOKEN,
     FIN_TOKEN,
 }CODES_LEX;
 typedef enum _bool{
@@ -65,6 +66,7 @@ FILE *f;
 char mot[MAX_SIZE];
 char caractere_courant;
 extern int dernierIndice;
+bool nouvLigne;
 
 CODES_LEX codeToken;
 #endif //UNTITLED1_MAIN_H

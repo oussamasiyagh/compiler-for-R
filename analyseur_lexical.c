@@ -59,11 +59,18 @@ bool estSpecial(){
     return false;
 }
 bool estUnSeparateur(){
+    nouvLigne = false;
     switch (caractere_courant){
         case ' ':
+            return true;
         case '\n':
+            //it's a new line let's mark it it'll come in handy for the parser
+            nouvLigne = true;
             return true;
         case '\r':
+            return true;
+        case '\t':
+            return true;
         default:
             return false;
     }
@@ -93,6 +100,9 @@ void LireSpecial(){
 }
 void lireSeperateur(){
     do{
+        if (nouvLigne == true){
+            ajouterCaractereAuMot();
+        }
         lire_caractere_suivant();
     }while(estUnSeparateur());
 }
@@ -106,6 +116,8 @@ void lire_caractere_suivant(){
     caractere_courant =  fgetc(f);
 }
 bool ScannerLeMotSuivant(){
+    //pisque il s'agit de l'analyseur syntaxique il faut faire appel a viderMot();
+    viderMot();
     do{
         if (estUnChiffre()){
             lireChiffre();
@@ -133,6 +145,7 @@ void associerToken()
     else if (strcmp(mot, "FALSE") == 0) codeToken = FALSE_TOKEN;
     else if (strcmp(mot, "library") == 0) codeToken = LIBRARY_TOKEN;
     else if (strcmp(mot, "for") == 0) codeToken = FOR_TOKEN;
+    else if (strcmp(mot, "break") == 0) codeToken = BREAK_TOKEN;
     else if (strcmp(mot, "return") == 0) codeToken = RETURN_TOKEN;
     else if (strcmp(mot, "function") == 0) codeToken = FUNCTION_TOKEN;
     else if (strcmp(mot, "print") == 0) codeToken = PRINT_TOKEN;
