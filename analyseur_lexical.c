@@ -116,7 +116,7 @@ void lire_caractere_suivant(){
     caractere_courant =  fgetc(f);
 }
 bool ScannerLeMotSuivant(){
-    //pisque il s'agit de l'analyseur syntaxique il faut faire appel a viderMot();
+    //pisque il s'agit de l'analyseur syntaxique il faut faire appel a viderMot() et associerToken.
     viderMot();
     do{
         if (estUnChiffre()){
@@ -132,6 +132,7 @@ bool ScannerLeMotSuivant(){
         }else
             LireErreur();
     }while(dernierIndice == 0);
+    associerToken();
     return true;
 }
 void associerToken()

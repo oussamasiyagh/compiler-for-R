@@ -7,7 +7,9 @@ void afficherErreur();
 bool single_input();
 bool simple_stmt();
 bool assign_stmt();
+bool aff();
 bool Exp();
+bool Exp_prime();
 bool value();
 bool numeric_term();
 bool term();
@@ -61,35 +63,47 @@ bool simple_stmt() {
     return true;
 }
 
-// assign_stmt ::= exp [=|<-] value
+// assign_stmt ::= exp {aff}
 
 bool assign_stmt(){
     if (!Exp()) return false;
     printf("---> assign_stmt\n");
-    if (codeToken != AFF_FT_TOKEN && codeToken != AFF_ND_TOKEN){
-        printf("--->%s---->%d", mot, codeToken);
-        afficherErreur();
-    }
-    printf("---> assign_stmt valid\n");
-    ScannerLeMotSuivant();
-    if (!value()){
-        afficherErreur();
+    if (aff()) {
+        printf("aff != epsilon\n");
+    }else{
+        printf("aff == epsilon\n");
     }
     return true;
 }
 
-// Exp  ::= id { [= | <-] id }*
-
+// Exp          ::= id {Exp_prime}*
+// Exp_prime    ::= [=|<-] id
+// aff          ::= [=|<-] value
 bool Exp(){
-    if (codeToken != ID_TOKEN) return false;
     printf("---> Exp\n");
+    if (codeToken == ID_TOKEN){
+        while (Exp_prime())
+            ;
+        printf("Exp valid");
+        return true;
+    }
+    return false;
+}
+bool Exp_prime(){
+    if (codeToken != AFF_FT_TOKEN && codeToken != AFF_ND_TOKEN) return false;
+    printf("---> Exp_prime\n");
     ScannerLeMotSuivant();
-    while(codeToken == AFF_FT_TOKEN || codeToken == AFF_ND_TOKEN){
-        ScannerLeMotSuivant();
-        if (codeToken != ID_TOKEN){
-            afficherErreur();
-        }
-        ScannerLeMotSuivant();
+    if (codeToken != ID_TOKEN){
+        afficherErreur();
+    }
+    return true;
+}
+bool aff(){
+    if (codeToken != AFF_FT_TOKEN && codeToken != AFF_ND_TOKEN) return false;
+    printf("---> aff\n");
+    ScannerLeMotSuivant();
+    if(!value){
+        afficherErreur();
     }
     return true;
 }
@@ -273,6 +287,8 @@ bool function_call(){
     return true;
 }
 
+
+// à compléter
 bool other_term(){
     return false;
 }
