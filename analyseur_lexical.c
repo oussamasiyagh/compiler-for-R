@@ -15,6 +15,8 @@ bool estUnCaractere(){
 }
 bool estSpecial(){
     switch (caractere_courant){
+        case '\"':
+            return true;
         case '.':
             return true;
         case ',':
@@ -62,16 +64,20 @@ bool estUnSeparateur(){
     nouvLigne = false;
     switch (caractere_courant){
         case ' ':
+            //nouvLigne = false;
             return true;
         case '\n':
             //it's a new line let's mark it it'll come in handy for the parser
             nouvLigne = true;
             return true;
         case '\r':
+
             return true;
         case '\t':
+            //nouvLigne = false;
             return true;
         default:
+            //nouvLigne = false;
             return false;
     }
 }
@@ -100,7 +106,7 @@ void LireSpecial(){
 }
 void lireSeperateur(){
     do{
-        if (nouvLigne == true){
+        if (nouvLigne == true && mot[0] != '\n'){
             ajouterCaractereAuMot();
         }
         lire_caractere_suivant();
@@ -164,6 +170,7 @@ void associerToken()
     else if (strcmp(mot, "]") == 0) codeToken = ACCF_TOKEN;
     else if (strcmp(mot, "#") == 0) codeToken = COM_TOKEN;
     else if (strcmp(mot, "!=") == 0) codeToken = DIFF_TOKEN;
+    else if (strcmp(mot, "\"") == 0) codeToken = DBQOUTE_TOKEN;
     else if (strcmp(mot, "\n") == 0) codeToken = NEWLINE_TOKEN;
     else if (strcmp(mot, "\t") == 0) codeToken = TAB_TOKEN;
     else if (strcmp(mot, "\\") == 0) codeToken = BACKSLA_TOKEN;

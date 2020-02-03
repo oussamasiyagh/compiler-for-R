@@ -56,7 +56,8 @@ typedef enum{
     CURF_TOKEN,
     NUM_TOKEN,
     BREAK_TOKEN,
-    FIN_TOKEN,
+    DBQOUTE_TOKEN,
+    FIN_TOKEN
 }CODES_LEX;
 typedef enum _bool{
     false, true
