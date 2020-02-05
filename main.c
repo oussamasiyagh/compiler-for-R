@@ -8,7 +8,7 @@ bool assign_stmt();
 bool aff();
 bool Exp();
 bool Exp_prime();
-bool value();
+//bool value();
 bool numeric_term();
 bool term();
 bool fact();
@@ -59,16 +59,22 @@ bool simple_stmt() {
     printf("---> simple_stmt\n");
     return true;
 }
-
+//version1.0
 // assign_stmt  ::= id Exp_prime
 // Exp_prime    ::= [=|<-] aff
 // aff          ::= value | assign_stmt
 
+//version 1.1
+//assign_stmt ::= id {exp_prime}
+//exp_prime   ::= [= |<-] aff
+//aff         ::= id {numeric_term | function_call |ex_prime} |num {numeric_term}  | function_stmt  | other_term(NA, TRUE, NULL)
+
+
 bool assign_stmt(){
     if (codeToken != ID_TOKEN) return false;
     ScannerLeMotSuivant();
-    if (!Exp_prime()) {
-        afficherErreur();
+    if(Exp_prime()){
+        printf("il ya une affectation après \n");
     }
     printf("--->assign_stmt\n");
     return true;
@@ -83,27 +89,44 @@ bool Exp_prime(){
     return true;
 }
 bool aff(){
-    if (!assign_stmt()) {
-        if  (!value()) return false;
-        printf("---> aff = value\n");
-    } else{
-        printf("---> aff = assign_stmt\n");
+    if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN  && !function_stmt() && !other_term()) return false;
+    else if (codeToken == ID_TOKEN){
+        ScannerLeMotSuivant();
+        //printf("%s", mot);
+        if (numeric_term()){
+            printf("un simple calcul :) \n");
+        }
+        if (Exp_prime()){
+            printf(" affectation  ? encore -_- \n");
+        }
+        if (function_call()){
+            printf(" c'est un appel à une fonction");
+        }
+    } else if (codeToken == NUM_TOKEN){
+        ScannerLeMotSuivant();
+        if (numeric_term()){
+            printf("un simple calcul :) \n");
+        }
     }
     return true;
 }
 
-//value ::= numeric_term | function_call | other_term | function_stmt
-
+//value ::= numeric_term
+/*
 bool value(){
     if (!numeric_term() && !function_call() && !other_term() && !function_stmt()) return false;
     printf("---> value\n");
     return true;
 }
-
-// numeric_term ::= term { [ + | - ] term }*
+*/
+// numeric_term ::= [+|-] term { [ + | - ] term }*
 
 bool numeric_term(){
-    if(!term()) return false;
+    if(codeToken != PLUS_TOKEN && codeToken != MOINS_TOKEN) return false;
+    ScannerLeMotSuivant();
+    if(!term()){
+        afficherErreur();
+    }
     while (codeToken == PLUS_TOKEN || codeToken == MOINS_TOKEN){
         ScannerLeMotSuivant();
         if (!term()){
@@ -117,7 +140,7 @@ bool numeric_term(){
 // term ::= fact { [ * | / ] fact}*
 
 bool term(){
-    if (!fact()) return false;
+    if (!fact())return false;
     while( codeToken == MULT_TOKEN || codeToken == DIV_TOKEN){
         ScannerLeMotSuivant();
         if (!fact()){
@@ -179,21 +202,21 @@ bool function_stmt(){
     return true;
 }
 
-// function_body_stmt := '{' single_input [ {'\n'} | { '\n' single_input }]* '}' | simple_stmt | return_stmt
+// function_body_stmt := '{' {\n}* single_input  {'\n' {single_input | return_stmt }}*  '}' | simple_stmt | return_stmt
 
 bool function_body_stmt(){
     if ( codeToken != CURO_TOKEN && !simple_stmt() && !return_stmt() ) return false;
     else {
         if (codeToken == CURO_TOKEN){
             ScannerLeMotSuivant();
-            if (codeToken == NEWLINE_TOKEN){
+            while (codeToken == NEWLINE_TOKEN){
                 ScannerLeMotSuivant();
             }
+            //printf("%d - %s", codeToken, mot);
             if ( !single_input() ){
                 //printf("error here");
                 afficherErreur();
             }
-
             while(codeToken == NEWLINE_TOKEN){
                 ScannerLeMotSuivant();
                 if (codeToken == CURF_TOKEN){
@@ -201,12 +224,15 @@ bool function_body_stmt(){
                     return true;
                 }
                 if (!single_input()){
-                    afficherErreur();
-                    //here is the problem
-                    printf("%d - %s", codeToken, mot);
+                    if (!return_stmt()){
+                        printf("%d - %s", codeToken, mot);
+                        afficherErreur();
+                        //here is the problem
+                    }
                 }
+                printf("%d - %s\n", codeToken, mot);
             }
-
+            //printf("%d - %s", codeToken, mot);
             if (codeToken == NEWLINE_TOKEN){
                ScannerLeMotSuivant();
             }
@@ -237,43 +263,46 @@ bool return_stmt(){
     if (codeToken != PF_TOKEN){
         afficherErreur();
     }
+    ScannerLeMotSuivant();
     printf("---> return_stmt\n");
     return true;
 }
 
-// print_stmt ::= 'print' '(' value ')' | value
+// print_stmt ::= 'print' '('[id {nmueric_term} | numeric_term]')'
 
 bool print_stmt(){
-    if ( codeToken != PRINT_TOKEN && !value()) return false;
+    if ( codeToken != PRINT_TOKEN ) return false;
     else {
-        if (codeToken == PRINT_TOKEN) {
             ScannerLeMotSuivant();
             if (codeToken != PO_TOKEN) {
                 afficherErreur();
             }
             ScannerLeMotSuivant();
-            if (!value()) {
-                afficherErreur();
+            if (codeToken == ID_TOKEN){
+                ScannerLeMotSuivant();
+                if (numeric_term()){
+                    //printf("%s", mot);
+                }
+
             }
+            if (numeric_term()) {
+                printf("afficher un calcul 2");
+            }
+            //printf("%d - %s", codeToken, mot);
             if (codeToken != PF_TOKEN) {
                 afficherErreur();
             }
-        }
+            ScannerLeMotSuivant();
         printf("---> print_stmt\n");
     }
     return true;
 }
 
-// function_call ::= id '(' id {, id}* ')'
+// function_call ::= '(' id {, id}* ')'
 
 bool function_call(){
-
-    if (codeToken != ID_TOKEN)return false;
-    ScannerLeMotSuivant();
-    if (codeToken != PO_TOKEN){
-
-        afficherErreur();
-    }
+    printf("%s", mot);
+    if (codeToken != PO_TOKEN)return false;
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN){
         afficherErreur();
@@ -289,18 +318,35 @@ bool function_call(){
     if (codeToken != PF_TOKEN){
         afficherErreur();
     }
+    ScannerLeMotSuivant();
     printf("---> function_call\n");
     return true;
 }
 
-
-// à compléter
+// other_term ::= NA | TRUE | FALSE
 bool other_term(){
-    return false;
+    if (codeToken != TRUE_TOKEN && codeToken != FALSE_TOKEN && codeToken != NA_TOKEN) return false;
+    return true;
 }
+
+//lib_stmt ::= 'library' '(' ID ')'
 bool lib_stmt(){
-    return false;
+    if(codeToken != LIBRARY_TOKEN) return false;
+    ScannerLeMotSuivant();
+    if (codeToken != PO_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (codeToken != ID_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (codeToken != PF_TOKEN){
+        afficherErreur();
+    }
+    return true;
 }
+//compound_stmt ::= if_stmt | repeat_stmt | while_stmt | for_stmt
 bool compound_stmt(){
     return false;
 }

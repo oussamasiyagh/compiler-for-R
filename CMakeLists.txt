@@ -3,4 +3,4 @@ project(untitled1 C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(untitled1 main.c main.h analyseur_lexical.c analyseur_lexical.h analyseur_syntaxique.c)
+add_executable(untitled1 main.c main.h analyseur_lexical.c analyseur_lexical.h )
