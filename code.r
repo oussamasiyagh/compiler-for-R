@@ -1,1 +1,1 @@
-a <- true
+if (a==b) print(a) else print(c)

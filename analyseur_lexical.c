@@ -57,6 +57,8 @@ bool estSpecial(){
             return true;
         case '*' :
             return true;
+        case ':':
+            return true;
     }
     return false;
 }
@@ -152,11 +154,13 @@ void associerToken()
     else if (strcmp(mot, "FALSE") == 0) codeToken = FALSE_TOKEN;
     else if (strcmp(mot, "library") == 0) codeToken = LIBRARY_TOKEN;
     else if (strcmp(mot, "for") == 0) codeToken = FOR_TOKEN;
+    else if (strcmp(mot, "in") == 0) codeToken = IN_TOKEN;
     else if (strcmp(mot, "break") == 0) codeToken = BREAK_TOKEN;
     else if (strcmp(mot, "return") == 0) codeToken = RETURN_TOKEN;
     else if (strcmp(mot, "function") == 0) codeToken = FUNCTION_TOKEN;
     else if (strcmp(mot, "print") == 0) codeToken = PRINT_TOKEN;
     else if (strcmp(mot, ".") == 0) codeToken = PT_TOKEN;
+    else if (strcmp(mot, ":") == 0) codeToken = DPT_TOKEN;
     else if (strcmp(mot, ",") == 0) codeToken = VIR_TOKEN;
     else if (strcmp(mot, "+") == 0) codeToken = PLUS_TOKEN;
     else if (strcmp(mot, "-") == 0) codeToken = MOINS_TOKEN;

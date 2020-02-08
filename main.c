@@ -20,6 +20,15 @@ bool return_stmt();
 bool other_term();
 bool lib_stmt();
 bool compound_stmt();
+bool if_stmt();
+bool if_body();
+bool else_stmt();
+bool repeat_stmt();
+bool while_stmt();
+bool loop_body();
+bool for_stmt();
+bool condition_stmt();
+
 
 int main() {
     f = fopen("/Users/macbook/Documents/untitled1/code.r", "r");
@@ -67,7 +76,7 @@ bool simple_stmt() {
 //version 1.1
 //assign_stmt ::= id {exp_prime}
 //exp_prime   ::= [= |<-] aff
-//aff         ::= id {numeric_term | function_call |ex_prime} |num {numeric_term}  | function_stmt  | other_term(NA, TRUE, NULL)
+//aff         ::= id {numeric_term | function_call |ex_prime} |num {numeric_term}  | function_stmt  | other_term
 
 
 bool assign_stmt(){
@@ -202,7 +211,7 @@ bool function_stmt(){
     return true;
 }
 
-// function_body_stmt := '{' {\n}* single_input  {'\n' {single_input | return_stmt }}*  '}' | simple_stmt | return_stmt
+// function_body_stmt := '{' {\n}* single_input|  {'\n' {single_input | return_stmt }}*  '}' | simple_stmt | return_stmt
 
 bool function_body_stmt(){
     if ( codeToken != CURO_TOKEN && !simple_stmt() && !return_stmt() ) return false;
@@ -212,11 +221,15 @@ bool function_body_stmt(){
             while (codeToken == NEWLINE_TOKEN){
                 ScannerLeMotSuivant();
             }
-            //printf("%d - %s", codeToken, mot);
-            if ( !single_input() ){
-                //printf("error here");
-                afficherErreur();
+
+            if (!single_input()){
+                if (!return_stmt()){
+                    printf("%d - %s", codeToken, mot);
+                    afficherErreur();
+                    //here is the problem
+                }
             }
+
             while(codeToken == NEWLINE_TOKEN){
                 ScannerLeMotSuivant();
                 if (codeToken == CURF_TOKEN){
@@ -348,9 +361,287 @@ bool lib_stmt(){
 }
 //compound_stmt ::= if_stmt | repeat_stmt | while_stmt | for_stmt
 bool compound_stmt(){
-    return false;
+    if(!if_stmt() && !repeat_stmt() && !while_stmt() && !for_stmt()) return false;
+    printf("---> compund_stmt\n");
+    return true;
 }
 
+//if_stmt ::= 'if' '(' condition_stmt ')' if_body
+//if_body ::= '{' {\n}* {single_input|BREAK} {'\n' {single_input |BREAK} }* '}' {else_stmt} |simple_stmt {else_stmt} | BREAK
+//else_stmt ::= else [ '{' {\n}* {single_input|BREAK} {'\n' {single_input |BREAK} }* '}' | {if_stmt} ]
+bool if_stmt(){
+    if (codeToken != IF_TOKEN)return false;
+    ScannerLeMotSuivant();
+    if (codeToken != PO_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+
+    if (!condition_stmt()){
+        afficherErreur();
+    }
+
+    if (codeToken != PF_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (!if_body()){
+        afficherErreur();
+    }
+    printf("---> if_stmt\n");
+    return true;
+}
+bool if_body(){
+    if ( codeToken != CURO_TOKEN && !simple_stmt() && codeToken != BREAK_TOKEN) return false;
+    if (codeToken == CURO_TOKEN){
+            ScannerLeMotSuivant();
+            while (codeToken == NEWLINE_TOKEN){
+                ScannerLeMotSuivant();
+            }
+
+            if (!single_input()){
+                if (codeToken != BREAK_TOKEN){
+                    printf("%d - %s", codeToken, mot);
+                    afficherErreur();
+                    //here is the problem
+                }
+            }
+
+            while(codeToken == NEWLINE_TOKEN){
+                ScannerLeMotSuivant();
+                if (codeToken == CURF_TOKEN){
+                    printf("---> if_body\n");
+                    return true;
+                }
+                if (!single_input()){
+                    if (codeToken != BREAK_TOKEN){
+                        printf("%d - %s", codeToken, mot);
+                        afficherErreur();
+                        //here is the problem
+                    }
+                }
+                printf("%d - %s\n", codeToken, mot);
+            }
+            //printf("%d - %s", codeToken, mot);
+            if (codeToken == NEWLINE_TOKEN){
+                ScannerLeMotSuivant();
+            }
+            if (codeToken != CURF_TOKEN){
+                //printf("%d - %s", codeToken, mot);
+                afficherErreur();
+            }
+            ScannerLeMotSuivant();
+            if (else_stmt()){
+                printf("there is an ELSE\n");
+            }
+        return true;
+    }
+    if (else_stmt()){
+        printf("there is an ELSE\n");
+    }
+    printf("---> if_body\n");
+    return true;
+    }
+bool else_stmt(){
+    if (codeToken != ELSE_TOKEN) return false;
+    ScannerLeMotSuivant();
+    if (codeToken == CURO_TOKEN){
+        ScannerLeMotSuivant();
+        while (codeToken == NEWLINE_TOKEN){
+            ScannerLeMotSuivant();
+        }
+
+        if (!single_input()){
+            if (codeToken != BREAK_TOKEN){
+                printf("%d - %s", codeToken, mot);
+                afficherErreur();
+                //here is the problem
+            }
+        }
+
+        while(codeToken == NEWLINE_TOKEN){
+            ScannerLeMotSuivant();
+            if (codeToken == CURF_TOKEN){
+                printf("---> else_body\n");
+                return true;
+            }
+            if (!single_input()){
+                if (codeToken != BREAK_TOKEN){
+                    printf("%d - %s", codeToken, mot);
+                    afficherErreur();
+                    //here is the problem
+                }
+            }
+            printf("%d - %s\n", codeToken, mot);
+        }
+        //printf("%d - %s", codeToken, mot);
+        if (codeToken == NEWLINE_TOKEN){
+            ScannerLeMotSuivant();
+        }
+        if (codeToken != CURF_TOKEN){
+            //printf("%d - %s", codeToken, mot);
+            afficherErreur();
+        }
+        printf("---> else_stmt");
+        return true;
+    }
+    if (if_stmt()){
+        printf("another if_stmt\n");
+        return true;
+    }
+}
+
+//while_stmt ::= 'while' '(' condition_stmt ')' loop_body
+//loop_body ::= '{' {\n}* {single_input|BREAK} {'\n' {single_input |BREAK} }* '}' | simple_stmt | BREAK
+bool while_stmt(){
+    if (codeToken != WHILE_TOKEN) return false;
+    ScannerLeMotSuivant();
+    if (codeToken != PO_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (!condition_stmt()){
+        afficherErreur();
+    }
+    if (codeToken != PF_TOKEN){
+        afficherErreur();
+    }
+    if (!loop_body()){
+        afficherErreur();
+    }
+    printf("---> while_stmt");
+    return true;
+}
+bool loop_body(){
+    if (codeToken != CURO_TOKEN && codeToken != BREAK_TOKEN && !simple_stmt()) return false;
+    if (codeToken == CURO_TOKEN){
+        ScannerLeMotSuivant();
+        while (codeToken == NEWLINE_TOKEN){
+            ScannerLeMotSuivant();
+        }
+
+        if (!single_input()){
+            if (codeToken != BREAK_TOKEN){
+                printf("%d - %s", codeToken, mot);
+                afficherErreur();
+                //here is the problem
+            }
+        }
+
+        while(codeToken == NEWLINE_TOKEN){
+            ScannerLeMotSuivant();
+            if (codeToken == CURF_TOKEN){
+                printf("---> loop_body\n");
+                return true;
+            }
+            if (!single_input()){
+                if (codeToken != BREAK_TOKEN){
+                    printf("%d - %s", codeToken, mot);
+                    afficherErreur();
+                    //here is the problem
+                }
+            }
+            printf("%d - %s\n", codeToken, mot);
+        }
+        //printf("%d - %s", codeToken, mot);
+        if (codeToken == NEWLINE_TOKEN){
+            ScannerLeMotSuivant();
+        }
+        if (codeToken != CURF_TOKEN){
+            //printf("%d - %s", codeToken, mot);
+            afficherErreur();
+        }
+        printf("---> loop_body");
+        return true;
+    }
+    return true;
+}
+
+//repeat_stmt ::= 'repeat' loop_body
+bool repeat_stmt(){
+    if (codeToken != REPEAT_TOKEN) return false;
+    ScannerLeMotSuivant();
+    if (!loop_body()){
+        afficherErreur();
+    }
+    printf("---> repeat_stmt\n");
+    return true;
+}
+
+//for_stmt ::= 'for' '(' id 'in' [id| num:num] ')' loop_body
+bool for_stmt(){
+    if (codeToken != FOR_TOKEN) return false;
+    ScannerLeMotSuivant();
+    if (codeToken != PO_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (codeToken != ID_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (codeToken != IN_TOKEN){
+        afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN){
+       afficherErreur();
+    }
+    ScannerLeMotSuivant();
+    if (codeToken == DPT_TOKEN){
+        ScannerLeMotSuivant();
+        if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN){
+            afficherErreur();
+        }
+        ScannerLeMotSuivant();
+    }
+    if (codeToken != PF_TOKEN){
+        afficherErreur();
+    }
+    if (!loop_body()){
+        afficherErreur();
+    }
+    printf("---> for_stmt");
+    return true;
+}
+
+//condition_stmt ::= [id|num] { [== | !=] [id|num]} {[&&| ||] conditon_stmt} || '!' [id|num] {[&&| ||] conditon_stmt}
+bool condition_stmt(){
+    if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN && codeToken != LOGNOT_TOKEN) return false;
+    else if (codeToken != LOGNOT_TOKEN){
+        ScannerLeMotSuivant();
+
+        if (codeToken == EQUAL_TOKEN || codeToken == DIFF_TOKEN){
+            ScannerLeMotSuivant();
+            if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN){
+                afficherErreur();
+            }
+            ScannerLeMotSuivant();
+        }
+        while (codeToken == LOGAND_TOKEN || codeToken == LOGOR_TOKEN){
+            ScannerLeMotSuivant();
+            if (!condition_stmt()){
+                return false;
+            }
+        }
+
+        printf("---> condition_stmt\n");
+        return true;
+    } else{
+        ScannerLeMotSuivant();
+        if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN) {
+            afficherErreur();
+        }
+        while (codeToken == LOGAND_TOKEN || codeToken == LOGOR_TOKEN){
+            ScannerLeMotSuivant();
+            if (!condition_stmt()){
+                return false;
+            }
+        }
+        printf("---> condition_stmt");
+        return true;
+    }
+}
 void afficherErreur(){
     printf("ERREUR \n");
 }
