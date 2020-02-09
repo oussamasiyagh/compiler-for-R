@@ -150,6 +150,33 @@ analyseur_lexical.c.s:
 	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/analyseur_lexical.c.s
 .PHONY : analyseur_lexical.c.s
 
+analyseur_syntaxique.o: analyseur_syntaxique.c.o
+
+.PHONY : analyseur_syntaxique.o
+
+# target to build an object file
+analyseur_syntaxique.c.o:
+	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/analyseur_syntaxique.c.o
+.PHONY : analyseur_syntaxique.c.o
+
+analyseur_syntaxique.i: analyseur_syntaxique.c.i
+
+.PHONY : analyseur_syntaxique.i
+
+# target to preprocess a source file
+analyseur_syntaxique.c.i:
+	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/analyseur_syntaxique.c.i
+.PHONY : analyseur_syntaxique.c.i
+
+analyseur_syntaxique.s: analyseur_syntaxique.c.s
+
+.PHONY : analyseur_syntaxique.s
+
+# target to generate assembly for a file
+analyseur_syntaxique.c.s:
+	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/analyseur_syntaxique.c.s
+.PHONY : analyseur_syntaxique.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -189,6 +216,9 @@ help:
 	@echo "... analyseur_lexical.o"
 	@echo "... analyseur_lexical.i"
 	@echo "... analyseur_lexical.s"
+	@echo "... analyseur_syntaxique.o"
+	@echo "... analyseur_syntaxique.i"
+	@echo "... analyseur_syntaxique.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

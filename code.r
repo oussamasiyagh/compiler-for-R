@@ -1,10 +1,8 @@
-while(a==b) {
-    c=d
-    if(c==d) {
-        break
-    }else{
-        test = function(c){
-            return(c+1)
-        }
-    }
+for(i in 1) {
+    if(c==d) {b=l}else if( !c) {
+            test = function(c) {
+                c=c+3
+                return(c)
+            }
+        }else{b=d}
 }
