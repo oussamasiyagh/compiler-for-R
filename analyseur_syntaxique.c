@@ -119,7 +119,7 @@ bool fact(){
             afficherErreur(NUMBER_EXPECTED_ERROR);
         }
         if (codeToken != PF_TOKEN) {
-            printf("%s", mot);
+            //printf("%s", mot);
             afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
         }
     } else if (codeToken == ID_TOKEN || codeToken == NUM_TOKEN){
@@ -264,7 +264,7 @@ bool print_stmt(){
 // function_call ::= '(' id {, id}* ')'
 
 bool function_call(){
-    printf("%s", mot);
+   // printf("%s", mot);
     if (codeToken != PO_TOKEN)return false;
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN){
@@ -320,6 +320,7 @@ bool compound_stmt(){
 //if_body ::= '{' {\n}* [single_input|BREAK] {'\n' {single_input |BREAK} }* '}' {else_stmt} |simple_stmt {else_stmt} | BREAK {else_stmt}
 //else_stmt ::= else [ '{' {\n}* [single_input|BREAK] {'\n' {single_input |BREAK} }* '}' | {if_stmt} | simple_stmt | BREAK ]
 bool if_stmt(){
+
     if (codeToken != IF_TOKEN)return false;
     ScannerLeMotSuivant();
     //printf("%d - %s", codeToken, mot);
@@ -462,6 +463,7 @@ bool else_stmt(){
             //printf("%d - %s", codeToken, mot);
             afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
         }
+        ScannerLeMotSuivant();
         printf("---> else_body\n");
         return true;
     }
@@ -499,6 +501,7 @@ bool while_stmt(){
     if (!loop_body()){
         afficherErreur(LOOP_BODY_ERROR);
     }
+    //ScannerLeMotSuivant();
     printf("---> while_stmt\n");
     return true;
 }
@@ -521,6 +524,7 @@ bool loop_body(){
         //------------------------------------------------
         while(codeToken == NEWLINE_TOKEN){
             ScannerLeMotSuivant();
+
             if (codeToken == CURF_TOKEN){
                 printf("---> loop_body\n");
                 ScannerLeMotSuivant();
@@ -532,15 +536,18 @@ bool loop_body(){
                     afficherErreur(LOOP_BODY_ERROR);
                     //here is the problem
                 }
+                //printf("%d - %s-", codeToken, mot);
             }
-
+            printf("%d - %s", codeToken, mot);
         }
         //------------------------------------------------
         if (codeToken != CURF_TOKEN){
-            //printf("%d - %s", codeToken, mot);
             afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
         }
+        ScannerLeMotSuivant();
+
         printf("---> loop_body\n");
+        printf("%d - %s-", codeToken, mot);
         return true;
     }
     printf("---> loop_body\n");
@@ -554,6 +561,7 @@ bool repeat_stmt(){
     if (!loop_body()){
         afficherErreur(LOOP_BODY_ERROR);
     }
+    //ScannerLeMotSuivant();
     printf("---> repeat_stmt\n");
     return true;
 }
@@ -592,6 +600,7 @@ bool for_stmt(){
     if (!loop_body()){
         afficherErreur(LOOP_BODY_ERROR);
     }
+    //ScannerLeMotSuivant();
     printf("---> for_stmt\n");
     return true;
 }

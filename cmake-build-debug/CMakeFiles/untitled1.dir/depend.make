@@ -3,15 +3,22 @@
 
 CMakeFiles/untitled1.dir/analyseur_lexical.c.o: ../analyseur_lexical.c
 CMakeFiles/untitled1.dir/analyseur_lexical.c.o: ../analyseur_lexical.h
+CMakeFiles/untitled1.dir/analyseur_lexical.c.o: ../gestionnaire_des_erreurs.h
 CMakeFiles/untitled1.dir/analyseur_lexical.c.o: ../main.h
 
 CMakeFiles/untitled1.dir/analyseur_syntaxique.c.o: ../analyseur_lexical.h
 CMakeFiles/untitled1.dir/analyseur_syntaxique.c.o: ../analyseur_syntaxique.c
 CMakeFiles/untitled1.dir/analyseur_syntaxique.c.o: ../analyseur_syntaxique.h
+CMakeFiles/untitled1.dir/analyseur_syntaxique.c.o: ../gestionnaire_des_erreurs.h
 CMakeFiles/untitled1.dir/analyseur_syntaxique.c.o: ../main.h
+
+CMakeFiles/untitled1.dir/gestionnaire_des_erreurs.c.o: ../gestionnaire_des_erreurs.c
+CMakeFiles/untitled1.dir/gestionnaire_des_erreurs.c.o: ../gestionnaire_des_erreurs.h
+CMakeFiles/untitled1.dir/gestionnaire_des_erreurs.c.o: ../main.h
 
 CMakeFiles/untitled1.dir/main.c.o: ../analyseur_lexical.h
 CMakeFiles/untitled1.dir/main.c.o: ../analyseur_syntaxique.h
+CMakeFiles/untitled1.dir/main.c.o: ../gestionnaire_des_erreurs.h
 CMakeFiles/untitled1.dir/main.c.o: ../main.c
 CMakeFiles/untitled1.dir/main.c.o: ../main.h
 
