@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_C
   "/Users/macbook/Documents/untitled1/analyseur_lexical.c" "/Users/macbook/Documents/untitled1/cmake-build-debug/CMakeFiles/untitled1.dir/analyseur_lexical.c.o"
   "/Users/macbook/Documents/untitled1/analyseur_syntaxique.c" "/Users/macbook/Documents/untitled1/cmake-build-debug/CMakeFiles/untitled1.dir/analyseur_syntaxique.c.o"
+  "/Users/macbook/Documents/untitled1/gestionnaire_des_erreurs.c" "/Users/macbook/Documents/untitled1/cmake-build-debug/CMakeFiles/untitled1.dir/gestionnaire_des_erreurs.c.o"
   "/Users/macbook/Documents/untitled1/main.c" "/Users/macbook/Documents/untitled1/cmake-build-debug/CMakeFiles/untitled1.dir/main.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")

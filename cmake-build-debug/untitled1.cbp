@@ -90,6 +90,12 @@
 		<Unit filename="/Users/macbook/Documents/untitled1/analyseur_syntaxique.h">
 			<Option target="untitled1"/>
 		</Unit>
+		<Unit filename="/Users/macbook/Documents/untitled1/gestionnaire_des_erreurs.c">
+			<Option target="untitled1"/>
+		</Unit>
+		<Unit filename="/Users/macbook/Documents/untitled1/gestionnaire_des_erreurs.h">
+			<Option target="untitled1"/>
+		</Unit>
 		<Unit filename="/Users/macbook/Documents/untitled1/main.c">
 			<Option target="untitled1"/>
 		</Unit>

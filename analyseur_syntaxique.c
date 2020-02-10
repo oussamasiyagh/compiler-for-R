@@ -41,7 +41,7 @@ bool Exp_prime(){
     if (codeToken != AFF_FT_TOKEN && codeToken != AFF_ND_TOKEN) return false;
     ScannerLeMotSuivant();
     if (!aff()){
-        afficherErreur();
+        afficherErreur(ASSIGNEMENT_OR_FUNCTION_CALL_END_STATEMENT_ERROR);
     }
     printf("---> Exp_prime\n");
     return true;
@@ -83,12 +83,12 @@ bool numeric_term(){
     if(codeToken != PLUS_TOKEN && codeToken != MOINS_TOKEN) return false;
     ScannerLeMotSuivant();
     if(!term()){
-        afficherErreur();
+        afficherErreur(TERM_ERROR);
     }
     while (codeToken == PLUS_TOKEN || codeToken == MOINS_TOKEN){
         ScannerLeMotSuivant();
         if (!term()){
-            afficherErreur();
+            afficherErreur(TERM_ERROR);
         }
     }
     printf("---> numeric_term\n");
@@ -102,7 +102,7 @@ bool term(){
     while( codeToken == MULT_TOKEN || codeToken == DIV_TOKEN){
         ScannerLeMotSuivant();
         if (!fact()){
-            afficherErreur();
+            afficherErreur(FACT_ERROR);
         }
     }
     printf("---> term\n");
@@ -116,11 +116,11 @@ bool fact(){
     else if (codeToken == PO_TOKEN) {
         ScannerLeMotSuivant();
         if (!numeric_term()) {
-            afficherErreur();
+            afficherErreur(NUMBER_EXPECTED_ERROR);
         }
         if (codeToken != PF_TOKEN) {
             printf("%s", mot);
-            afficherErreur();
+            afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
         }
     } else if (codeToken == ID_TOKEN || codeToken == NUM_TOKEN){
         ScannerLeMotSuivant();
@@ -135,26 +135,26 @@ bool function_stmt(){
     if ( codeToken != FUNCTION_TOKEN) return false;
     ScannerLeMotSuivant();
     if ( codeToken != PO_TOKEN) {
-        afficherErreur();
+        afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN){
-        afficherErreur();
+        afficherErreur(IDENTIFIER_EXPECTED_ERROR);
     }
     ScannerLeMotSuivant();
     while (codeToken == VIR_TOKEN){
         ScannerLeMotSuivant();
         if (codeToken != ID_TOKEN){
-            afficherErreur();
+            afficherErreur(IDENTIFIER_EXPECTED_ERROR);
         }
         ScannerLeMotSuivant();
     }
     if (codeToken != PF_TOKEN){
-        afficherErreur();
+        afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (!function_body_stmt()){
-        afficherErreur();
+        afficherErreur(FUNCTION_BODY_ERROR);
     }
     printf("---> function_stmt\n");
     return true;
@@ -174,7 +174,7 @@ bool function_body_stmt(){
             if (!single_input()){
                 if (!return_stmt()){
                     //
-                    afficherErreur();
+                    afficherErreur(FUNCTION_BODY_ERROR);
                     //here is the problem
                 }
             }
@@ -188,7 +188,7 @@ bool function_body_stmt(){
                 if (!single_input()){
                     if (!return_stmt()){
                         printf("%d - %s", codeToken, mot);
-                        afficherErreur();
+                        afficherErreur(FUNCTION_BODY_ERROR);
                         //here is the problem
                     }
                 }
@@ -200,7 +200,7 @@ bool function_body_stmt(){
             }
             if (codeToken != CURF_TOKEN){
                 //printf("%d - %s", codeToken, mot);
-                afficherErreur();
+                afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
             }
         }
         printf("---> function_body_stmt\n");
@@ -216,15 +216,15 @@ bool return_stmt(){
     printf("%d - %s", codeToken, mot);
     ScannerLeMotSuivant();
     if (codeToken != PO_TOKEN){
-        afficherErreur();
+        afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN){
-        afficherErreur();
+        afficherErreur(IDENTIFIER_EXPECTED_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != PF_TOKEN){
-        afficherErreur();
+        afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     printf("---> return_stmt\n");
@@ -238,7 +238,7 @@ bool print_stmt(){
     else {
         ScannerLeMotSuivant();
         if (codeToken != PO_TOKEN) {
-            afficherErreur();
+            afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
         }
         ScannerLeMotSuivant();
         if (codeToken == ID_TOKEN){
@@ -253,7 +253,7 @@ bool print_stmt(){
         }
         //printf("%d - %s", codeToken, mot);
         if (codeToken != PF_TOKEN) {
-            afficherErreur();
+            afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
         }
         ScannerLeMotSuivant();
         printf("---> print_stmt\n");
@@ -268,18 +268,18 @@ bool function_call(){
     if (codeToken != PO_TOKEN)return false;
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN){
-        afficherErreur();
+        afficherErreur(IDENTIFIER_EXPECTED_ERROR);
     }
     ScannerLeMotSuivant();
     while( codeToken == VIR_TOKEN){
         ScannerLeMotSuivant();
         if (codeToken != ID_TOKEN){
-            afficherErreur();
+            afficherErreur(IDENTIFIER_EXPECTED_ERROR);
         }
         ScannerLeMotSuivant();
     }
     if (codeToken != PF_TOKEN){
-        afficherErreur();
+        afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     printf("---> function_call\n");
@@ -297,15 +297,15 @@ bool lib_stmt(){
     if(codeToken != LIBRARY_TOKEN) return false;
     ScannerLeMotSuivant();
     if (codeToken != PO_TOKEN){
-        afficherErreur();
+        afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN){
-        afficherErreur();
+        afficherErreur(IDENTIFIER_EXPECTED_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != PF_TOKEN){
-        afficherErreur();
+        afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     return true;
 }
@@ -324,21 +324,21 @@ bool if_stmt(){
     ScannerLeMotSuivant();
     //printf("%d - %s", codeToken, mot);
     if (codeToken != PO_TOKEN){
-        afficherErreur();
+        afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
 
     if (!condition_stmt()){
-        afficherErreur();
+        afficherErreur(CONDITION_ERROR);
     }
 
     if (codeToken != PF_TOKEN){
         printf("%d - %s", codeToken, mot);
-        afficherErreur();
+        afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (!if_body()){
-        afficherErreur();
+        afficherErreur(IF_BODY_ERROR);
     }
     printf("---> if_stmt\n");
     return true;
@@ -354,7 +354,7 @@ bool if_body(){
 
         if (!single_input()){
             if (codeToken != BREAK_TOKEN){
-                afficherErreur();
+                afficherErreur(IF_BODY_ERROR);
                 //here is the problem
             }
             ScannerLeMotSuivant();
@@ -373,7 +373,7 @@ bool if_body(){
             }
             if (!single_input()){
                 if (codeToken != BREAK_TOKEN){
-                    afficherErreur();
+                    afficherErreur(IF_BODY_ERROR);
                     //here is the problem
                 }
                 ScannerLeMotSuivant();
@@ -385,7 +385,7 @@ bool if_body(){
         //printf("%d - %s", codeToken, mot);
         if (codeToken != CURF_TOKEN){
             //printf("%d - %s", codeToken, mot);
-            afficherErreur();
+            afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
         }
         //printf("%d - %s", codeToken, mot);
         ScannerLeMotSuivant();
@@ -426,7 +426,7 @@ bool else_stmt(){
         if (!single_input()){
             if (codeToken != BREAK_TOKEN){
 
-                afficherErreur();
+                afficherErreur(ELSE_STATEMENT_BODY);
                 //here is the problem
             }
             ScannerLeMotSuivant();
@@ -445,7 +445,7 @@ bool else_stmt(){
             if (!single_input()){
                 if (codeToken != BREAK_TOKEN){
                     //printf("%d - %s", codeToken, mot);
-                    afficherErreur();
+                    afficherErreur(ELSE_STATEMENT_BODY);
                     //here is the problem
                 }
                 ScannerLeMotSuivant();
@@ -460,7 +460,7 @@ bool else_stmt(){
         }*/
         if (codeToken != CURF_TOKEN){
             //printf("%d - %s", codeToken, mot);
-            afficherErreur();
+            afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
         }
         printf("---> else_body\n");
         return true;
@@ -485,19 +485,19 @@ bool while_stmt(){
     if (codeToken != WHILE_TOKEN) return false;
     ScannerLeMotSuivant();
     if (codeToken != PO_TOKEN){
-        afficherErreur();
+        afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (!condition_stmt()){
-        afficherErreur();
+        afficherErreur(CONDITION_ERROR);
     }
 
     if (codeToken != PF_TOKEN){
-        afficherErreur();
+        afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (!loop_body()){
-        afficherErreur();
+        afficherErreur(LOOP_BODY_ERROR);
     }
     printf("---> while_stmt\n");
     return true;
@@ -513,7 +513,7 @@ bool loop_body(){
 
         if (!single_input()){
             if (codeToken != BREAK_TOKEN){
-                afficherErreur();
+                afficherErreur(LOOP_BODY_ERROR);
                 //here is the problem
             }
             ScannerLeMotSuivant();
@@ -529,7 +529,7 @@ bool loop_body(){
             if (!single_input()){
                 if (codeToken != BREAK_TOKEN){
                     //printf("%d - %s", codeToken, mot);
-                    afficherErreur();
+                    afficherErreur(LOOP_BODY_ERROR);
                     //here is the problem
                 }
             }
@@ -538,7 +538,7 @@ bool loop_body(){
         //------------------------------------------------
         if (codeToken != CURF_TOKEN){
             //printf("%d - %s", codeToken, mot);
-            afficherErreur();
+            afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
         }
         printf("---> loop_body\n");
         return true;
@@ -552,7 +552,7 @@ bool repeat_stmt(){
     if (codeToken != REPEAT_TOKEN) return false;
     ScannerLeMotSuivant();
     if (!loop_body()){
-        afficherErreur();
+        afficherErreur(LOOP_BODY_ERROR);
     }
     printf("---> repeat_stmt\n");
     return true;
@@ -563,34 +563,34 @@ bool for_stmt(){
     if (codeToken != FOR_TOKEN) return false;
     ScannerLeMotSuivant();
     if (codeToken != PO_TOKEN){
-        afficherErreur();
+        afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN){
-        afficherErreur();
+        afficherErreur(IDENTIFIER_EXPECTED_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != IN_TOKEN){
-        afficherErreur();
+        afficherErreur(IN_EXPECTED_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN){
-        afficherErreur();
+        afficherErreur(NUMBER_ID_EXPECTED_ERROR);
     }
     ScannerLeMotSuivant();
     if (codeToken == DPT_TOKEN){
         ScannerLeMotSuivant();
         if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN){
-            afficherErreur();
+            afficherErreur(NUMBER_ID_EXPECTED_ERROR);
         }
         ScannerLeMotSuivant();
     }
     if (codeToken != PF_TOKEN){
-        afficherErreur();
+        afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
     if (!loop_body()){
-        afficherErreur();
+        afficherErreur(LOOP_BODY_ERROR);
     }
     printf("---> for_stmt\n");
     return true;
@@ -604,7 +604,7 @@ bool condition_stmt(){
         if (codeToken == EQUAL_TOKEN || codeToken == DIFF_TOKEN){
             ScannerLeMotSuivant();
             if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN){
-                afficherErreur();
+                afficherErreur(NUMBER_ID_EXPECTED_ERROR);
             }
             ScannerLeMotSuivant();
         }
@@ -619,7 +619,7 @@ bool condition_stmt(){
     } else{
         ScannerLeMotSuivant();
         if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN) {
-            afficherErreur();
+            afficherErreur(NUMBER_ID_EXPECTED_ERROR);
         }
         ScannerLeMotSuivant();
         while (codeToken == LOGAND_TOKEN || codeToken == LOGOR_TOKEN){
@@ -633,7 +633,3 @@ bool condition_stmt(){
     }
 }
 
-
-void afficherErreur() {
-    printf("ERREUR \n");
-}

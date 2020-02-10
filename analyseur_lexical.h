@@ -6,6 +6,7 @@
 #define UNTITLED1_ANALYSEUR_LEXICAL_H
 
 #include "main.h"
+#include "gestionnaire_des_erreurs.h"
 
 bool ScannerLeMotSuivant();
 void lire_caractere_suivant();

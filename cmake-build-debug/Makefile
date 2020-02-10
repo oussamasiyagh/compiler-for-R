@@ -177,6 +177,33 @@ analyseur_syntaxique.c.s:
 	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/analyseur_syntaxique.c.s
 .PHONY : analyseur_syntaxique.c.s
 
+gestionnaire_des_erreurs.o: gestionnaire_des_erreurs.c.o
+
+.PHONY : gestionnaire_des_erreurs.o
+
+# target to build an object file
+gestionnaire_des_erreurs.c.o:
+	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/gestionnaire_des_erreurs.c.o
+.PHONY : gestionnaire_des_erreurs.c.o
+
+gestionnaire_des_erreurs.i: gestionnaire_des_erreurs.c.i
+
+.PHONY : gestionnaire_des_erreurs.i
+
+# target to preprocess a source file
+gestionnaire_des_erreurs.c.i:
+	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/gestionnaire_des_erreurs.c.i
+.PHONY : gestionnaire_des_erreurs.c.i
+
+gestionnaire_des_erreurs.s: gestionnaire_des_erreurs.c.s
+
+.PHONY : gestionnaire_des_erreurs.s
+
+# target to generate assembly for a file
+gestionnaire_des_erreurs.c.s:
+	$(MAKE) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/gestionnaire_des_erreurs.c.s
+.PHONY : gestionnaire_des_erreurs.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -219,6 +246,9 @@ help:
 	@echo "... analyseur_syntaxique.o"
 	@echo "... analyseur_syntaxique.i"
 	@echo "... analyseur_syntaxique.s"
+	@echo "... gestionnaire_des_erreurs.o"
+	@echo "... gestionnaire_des_erreurs.i"
+	@echo "... gestionnaire_des_erreurs.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

@@ -1,6 +1,7 @@
 #include "analyseur_syntaxique.h"
 int dernierIndice = 0;
 
+
 int main() {
     f = fopen("/Users/macbook/Documents/untitled1/code.r", "r");
     viderMot();
@@ -22,3 +23,6 @@ int main() {
     fclose(f);
     return 0;
 }
+
+
+
