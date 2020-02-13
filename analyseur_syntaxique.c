@@ -2,6 +2,30 @@
 #include "analyseur_syntaxique.h"
 
 //analyseur_syntaxique :
+
+//program ::= single_input {'\n' {single_input|break}}*
+bool program(){
+    if (!single_input() && codeToken != BREAK_TOKEN) return false;
+    do{
+        ScannerLeMotSuivant();
+        printf("%s", mot);
+        if (codeToken == BREAK_TOKEN){
+            ScannerLeMotSuivant();
+        }
+        if (single_input()){
+            printf("it was another statement\n");
+
+        }
+        if (caractere_courant == EOF){
+            printf("---> program\n");
+            return true;
+        }
+    }while (codeToken == NEWLINE_TOKEN);
+    printf("---> program\n");
+    return true;
+}
+
+
 // single_input ::= simple_stmt | compound_stmt
 
 bool single_input(){
@@ -317,8 +341,8 @@ bool compound_stmt(){
 }
 
 //if_stmt ::= 'if' '(' condition_stmt ')' if_body
-//if_body ::= '{' {\n}* [single_input|BREAK] {'\n' {single_input |BREAK} }* '}' {else_stmt} |simple_stmt {else_stmt} | BREAK {else_stmt}
-//else_stmt ::= else [ '{' {\n}* [single_input|BREAK] {'\n' {single_input |BREAK} }* '}' | {if_stmt} | simple_stmt | BREAK ]
+//if_body ::= '{' {\n}* program '}' {else_stmt} |simple_stmt {else_stmt} | BREAK {else_stmt}
+//else_stmt ::= else [ '{' {\n}* program '}' | {if_stmt} | simple_stmt | BREAK ]
 bool if_stmt(){
 
     if (codeToken != IF_TOKEN)return false;
@@ -352,7 +376,10 @@ bool if_body(){
         while (codeToken == NEWLINE_TOKEN){
             ScannerLeMotSuivant();
         }
-
+        if (!program()){
+            afficherErreur(IF_BODY_ERROR);
+        }
+        /*
         if (!single_input()){
             if (codeToken != BREAK_TOKEN){
                 afficherErreur(IF_BODY_ERROR);
@@ -383,13 +410,16 @@ bool if_body(){
             //printf("%d - %s\n", codeToken, mot);
         }
         //------------------------------------------------
-        //printf("%d - %s", codeToken, mot);
+
+         */
+
         if (codeToken != CURF_TOKEN){
             //printf("%d - %s", codeToken, mot);
             afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
         }
         //printf("%d - %s", codeToken, mot);
         ScannerLeMotSuivant();
+        printf("%d - %s", codeToken, mot);
         /*while (codeToken == NEWLINE_TOKEN){
             ScannerLeMotSuivant();
         }*/
@@ -423,7 +453,10 @@ bool else_stmt(){
         while (codeToken == NEWLINE_TOKEN){
             ScannerLeMotSuivant();
         }
-
+        if (!program()){
+            afficherErreur(ELSE_STATEMENT_BODY);
+        }
+        /*
         if (!single_input()){
             if (codeToken != BREAK_TOKEN){
 
@@ -454,6 +487,7 @@ bool else_stmt(){
 
             //printf("%d - %s\n", codeToken, mot);
         }
+        */
         //------------------------------------------------
         /*
         while (codeToken == NEWLINE_TOKEN){
@@ -482,7 +516,12 @@ bool else_stmt(){
 }
 
 //while_stmt ::= 'while' '(' condition_stmt ')' loop_body
+
+//version 1.0
 //loop_body ::= '{' {\n}* {single_input|BREAK} {'\n' {single_input |BREAK} }* '}' | simple_stmt | BREAK
+
+//version 1.1
+//loop_body ::= '{' {\n}* program '}' | simple_stmt | BREAK
 bool while_stmt(){
     if (codeToken != WHILE_TOKEN) return false;
     ScannerLeMotSuivant();
@@ -514,16 +553,36 @@ bool loop_body(){
             ScannerLeMotSuivant();
         }
 
+        if (!program()){
+            afficherErreur(LOOP_BODY_ERROR);
+        }
+        /*
         if (!single_input()){
             if (codeToken != BREAK_TOKEN){
                 afficherErreur(LOOP_BODY_ERROR);
                 //here is the problem
             }
             ScannerLeMotSuivant();
-        }
+        }*/
         //------------------------------------------------
-        while(codeToken == NEWLINE_TOKEN){
+        /*
+        do{
             ScannerLeMotSuivant();
+            if(codeToken != NEWLINE_TOKEN && codeToken != CURF_TOKEN){
+                if (!single_input()){
+                    if (codeToken != BREAK_TOKEN){
+                        //printf("%d - %s", codeToken, mot);
+                        afficherErreur(LOOP_BODY_ERROR);
+                        //here is the problem
+                    }
+                    //printf("%d - %s-", codeToken, mot);
+                }
+            }
+        }while (codeToken != CURF_TOKEN);
+
+         */
+        /*while(codeToken == NEWLINE_TOKEN ){
+
 
             if (codeToken == CURF_TOKEN){
                 printf("---> loop_body\n");
@@ -538,11 +597,12 @@ bool loop_body(){
                 }
                 //printf("%d - %s-", codeToken, mot);
             }
-            printf("%d - %s", codeToken, mot);
-        }
+
+        }*/
         //------------------------------------------------
         if (codeToken != CURF_TOKEN){
             afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
+            printf("%d - %s", codeToken, mot);
         }
         ScannerLeMotSuivant();
 

@@ -8,7 +8,7 @@
 #include "main.h"
 #include "analyseur_lexical.h"
 
-
+bool program();
 bool single_input();
 bool simple_stmt();
 bool assign_stmt();

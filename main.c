@@ -19,7 +19,7 @@ int main() {
 
     //tester l'analyseur syntaxique:
     ScannerLeMotSuivant();
-    single_input();
+    program();
     fclose(f);
     return 0;
 }

@@ -166,7 +166,7 @@ void associerToken()
     else if (strcmp(mot, "-") == 0) codeToken = MOINS_TOKEN;
     else if (strcmp(mot, "*") == 0) codeToken = MULT_TOKEN;
     else if (strcmp(mot, "<-") == 0) codeToken = AFF_ND_TOKEN;
-    else if (strcmp(mot, "->") == 0) codeToken = AFF_TD_TOKEN;
+    //else if (strcmp(mot, "->") == 0) codeToken = AFF_TD_TOKEN;
     else if (strcmp(mot, "=") == 0) codeToken = AFF_FT_TOKEN;
     else if (strcmp(mot, "(") == 0) codeToken = PO_TOKEN;
     else if (strcmp(mot, ")") == 0) codeToken = PF_TOKEN;
@@ -174,10 +174,10 @@ void associerToken()
     else if (strcmp(mot, "]") == 0) codeToken = ACCF_TOKEN;
     else if (strcmp(mot, "#") == 0) codeToken = COM_TOKEN;
     else if (strcmp(mot, "!=") == 0) codeToken = DIFF_TOKEN;
-    else if (strcmp(mot, "\"") == 0) codeToken = DBQOUTE_TOKEN;
+    //else if (strcmp(mot, "\"") == 0) codeToken = DBQOUTE_TOKEN;
     else if (strcmp(mot, "\n") == 0) codeToken = NEWLINE_TOKEN;
-    else if (strcmp(mot, "\t") == 0) codeToken = TAB_TOKEN;
-    else if (strcmp(mot, "\\") == 0) codeToken = BACKSLA_TOKEN;
+    //else if (strcmp(mot, "\t") == 0) codeToken = TAB_TOKEN;
+    //else if (strcmp(mot, "\\") == 0) codeToken = BACKSLA_TOKEN;
     else if (strcmp(mot, "<=") == 0) codeToken = INFEG_TOKEN;
     else if (strcmp(mot, ">=") == 0) codeToken = SUPEG_TOKEN;
     else if (strcmp(mot, "<") == 0) codeToken = INF_TOKEN;
@@ -186,8 +186,8 @@ void associerToken()
     else if (strcmp(mot, "/") == 0) codeToken = DIV_TOKEN;
     else if (strcmp(mot, "||") == 0) codeToken = LOGOR_TOKEN;
     else if (strcmp(mot, "&&") == 0) codeToken = LOGAND_TOKEN;
-    else if (strcmp(mot, "&") == 0) codeToken = ELWAND_TOKEN;
-    else if (strcmp(mot, "|") == 0) codeToken = ELWOR_TOKEN;
+    //else if (strcmp(mot, "&") == 0) codeToken = ELWAND_TOKEN;
+    //else if (strcmp(mot, "|") == 0) codeToken = ELWOR_TOKEN;
     else if (strcmp(mot, "!") == 0) codeToken = LOGNOT_TOKEN;
     else if (strcmp(mot, "{") == 0) codeToken = CURO_TOKEN;
     else if (strcmp(mot, "}") == 0) codeToken = CURF_TOKEN;
