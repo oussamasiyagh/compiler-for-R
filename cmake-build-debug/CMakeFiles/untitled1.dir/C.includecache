@@ -12,10 +12,6 @@ main.h
 gestionnaire_des_erreurs.h
 /Users/macbook/Documents/untitled1/gestionnaire_des_erreurs.h
 
-/Users/macbook/Documents/untitled1/analyseur_syntaxique.c
-analyseur_syntaxique.h
-/Users/macbook/Documents/untitled1/analyseur_syntaxique.h
-
 /Users/macbook/Documents/untitled1/analyseur_syntaxique.h
 main.h
 /Users/macbook/Documents/untitled1/main.h
@@ -25,6 +21,10 @@ analyseur_lexical.h
 /Users/macbook/Documents/untitled1/gestionnaire_des_erreurs.h
 main.h
 /Users/macbook/Documents/untitled1/main.h
+
+/Users/macbook/Documents/untitled1/main.c
+analyseur_syntaxique.h
+/Users/macbook/Documents/untitled1/analyseur_syntaxique.h
 
 /Users/macbook/Documents/untitled1/main.h
 stdio.h

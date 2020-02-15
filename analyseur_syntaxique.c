@@ -1,5 +1,100 @@
 
 #include "analyseur_syntaxique.h"
+//analyseur sémantique :
+
+extern char** assignedValues;
+extern char** termesDeCalculs;
+
+char functionName[MAX_SIZE];
+char variablePrint[MAX_SIZE];
+int nombreArguments = 1;
+int nombreArgumentsCall =1;
+bool insideLoop = false;
+void ajouterSymbole() {
+    bool trouve = false;
+    for (int i = 0; i < dernierIndiceTS; i++) {
+        if (strcmp(mot, tableSymbole[i].nom) == 0) {
+            trouve = true;
+        }
+    }
+    if (!trouve) {
+        strcpy(tableSymbole[dernierIndiceTS].nom, mot);
+        tableSymbole[dernierIndiceTS].valNom = NULLVAL;
+        dernierIndiceTS++;
+    }
+}
+void changerValSymbole(char name[MAX_SIZE],TSYM class) {
+    for (int i = 0; i < dernierIndiceTS; i++) {
+        if (strcmp(tableSymbole[i].nom, name) == 0){
+            tableSymbole[i].valNom = class;
+        }
+    }
+}
+void mettreajourValSymbole() {
+    if (strcmp(assignedValues[dernierIndiceAssignedValuesTable-1], "TRUE") == 0 || strcmp(assignedValues[dernierIndiceAssignedValuesTable-1], "FALSE") == 0){
+
+        for (int i = 0; i < dernierIndiceAssignedValuesTable; i++) {
+            changerValSymbole(assignedValues[i], BOOLVAL);
+        }
+    } else if (strcmp(assignedValues[dernierIndiceAssignedValuesTable-1], "NA") == 0){
+        for (int i = 0; i < dernierIndiceAssignedValuesTable; i++) {
+            changerValSymbole(assignedValues[i], NAVAL);
+        }
+    } else if (assignedValues[dernierIndiceAssignedValuesTable-1][0] <= '9' && assignedValues[dernierIndiceAssignedValuesTable-1][0] >= '0') {
+        for (int i = 0; i < dernierIndiceAssignedValuesTable; i++) {
+            //printf("%s--lol \n", assignedValues[dernierIndiceAssignedValuesTable-1]);
+            changerValSymbole(assignedValues[i], NUMVAL);
+        }
+    } else if (strcmp(assignedValues[dernierIndiceAssignedValuesTable-1], "function") == 0){
+        for (int i = 0; i < dernierIndiceAssignedValuesTable; i++) {
+            //printf("%s--lol \n", assignedValues[dernierIndiceAssignedValuesTable-1]);
+            changerValSymbole(assignedValues[i], FUNVAL);
+        }
+    }
+/*
+    for (int i = 0; i < dernierIndiceTS; i++) {
+        printf("%s--%i--%i \n", tableSymbole[i].nom, tableSymbole[i].valNom, dernierIndiceTS);
+    }
+*/
+    //free pointers:
+    for (int i = 0; i < dernierIndiceAssignedValuesTable; i++) {
+        printf("%s------------%d \n", assignedValues[i], i);
+        free(assignedValues[i]);
+    }
+    free(assignedValues);
+    dernierIndiceAssignedValuesTable = 0;
+    assignedValues = (char**)malloc(sizeof(char**)*10);
+}
+void remplirAssignedValuesTable(){
+    assignedValues[dernierIndiceAssignedValuesTable] = (char*)malloc(sizeof(mot));
+    strcpy(assignedValues[dernierIndiceAssignedValuesTable], mot);
+    //printf("%s--%i \n", assignedValues[dernierIndiceAssignedValuesTable], dernierIndiceAssignedValuesTable);
+    dernierIndiceAssignedValuesTable++;
+}
+
+void remplirTermesDeCalculs(){
+    termesDeCalculs[dernierIndiceTermeDeCalcul] = (char*)malloc(sizeof(mot));
+    strcpy(termesDeCalculs[dernierIndiceTermeDeCalcul], mot);
+    //printf("%s--%i \n", assignedValues[dernierIndiceAssignedValuesTable], dernierIndiceAssignedValuesTable);
+    dernierIndiceTermeDeCalcul++;
+}
+bool verifierNumericTermes(){
+    for (int i = 0; i < dernierIndiceTermeDeCalcul; i++) {
+        if(recupererValSymbole(termesDeCalculs[i]) != NUMVAL){
+            return false;
+        }
+    }
+    return true;
+}
+TSYM recupererValSymbole(char s[MAX_SIZE]){
+    for (int i = 0; i <dernierIndiceTS ; i++) {
+        if (strcmp(s, tableSymbole[i].nom) == 0){
+            return tableSymbole[i].valNom;
+        }
+    }
+    return -1;
+}
+
 
 //analyseur_syntaxique :
 
@@ -8,13 +103,20 @@ bool program(){
     if (!single_input() && codeToken != BREAK_TOKEN) return false;
     do{
         ScannerLeMotSuivant();
-        printf("%s", mot);
+        // printf("%s", mot);
         if (codeToken == BREAK_TOKEN){
+            for (int i = 0; i < dernierIndiceTS ; i++) {
+                if (tableSymbole[i].valNom == BCLVAL){
+                    insideLoop = true;
+                }
+            }
+            if (insideLoop == false){
+                afficherErreur(BREAK_ERROR);
+            }
             ScannerLeMotSuivant();
         }
         if (single_input()){
             printf("it was another statement\n");
-
         }
         if (caractere_courant == EOF){
             printf("---> program\n");
@@ -33,6 +135,12 @@ bool single_input(){
     else if (!compound_stmt()){
         printf("---> single_input\n");
     }
+    /*
+    for (int i = 0; i < dernierIndiceTS; i++) {
+        printf("----------------------->%s--%i--%i \n", tableSymbole[i].nom, tableSymbole[i].valNom, i);
+    }
+*/
+    //printf("%s-%i", mot, codeToken);
     return true;
 }
 // simple_stmt  ::= assign_stmt | lib_stmt | print_stmt
@@ -54,11 +162,19 @@ bool simple_stmt() {
 
 bool assign_stmt(){
     if (codeToken != ID_TOKEN) return false;
+    ajouterSymbole();
+    remplirAssignedValuesTable();
+    strcpy(variablePrint, mot);
     ScannerLeMotSuivant();
     if(Exp_prime()){
-        printf("il ya une affectation après \n");
+        printf("il y a une affectation après \n");
+    } else{
+        if(recupererValSymbole(variablePrint) == NULLVAL){
+            afficherErreur(NO_VALUE_ERROR);
+        }
     }
     printf("--->assign_stmt\n");
+    //free(assignedValues);
     return true;
 }
 bool Exp_prime(){
@@ -73,34 +189,54 @@ bool Exp_prime(){
 bool aff(){
     if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN  && !function_stmt() && !other_term()) return false;
     else if (codeToken == ID_TOKEN){
+        remplirTermesDeCalculs();
+        //printf("%s\n", mot);
+        ajouterSymbole();
+        remplirAssignedValuesTable();
+        //printf("%s\n", mot);
+        strcpy(functionName, mot);
         ScannerLeMotSuivant();
-        //printf("%s", mot);
         if (numeric_term()){
+            if(verifierNumericTermes() == false){
+                afficherErreur(EXPECTED_NUMBER_TYPE);
+            }else{
+                changerValSymbole(tableSymbole[dernierIndiceTS-1].nom, NUMVAL);
+            }
             printf("un simple calcul :) \n");
         }
         if (Exp_prime()){
             printf(" affectation  ? encore -_- \n");
         }
         if (function_call()){
-            printf(" c'est un appel à une fonction");
+            if(recupererValSymbole(functionName) != FUNVAL){
+                afficherErreur(FUNCTION_CALL_ERROR);
+            }
+            changerValSymbole(variablePrint, NUMVAL);
+            printf("c'est un appel à une fonction\n");
+        }
+       // printf("%s - %d\n", mot, codeToken);
+        // case : id <- id
+        if(!numeric_term() && !Exp_prime() && !function_call()){
+            if (codeToken == ID_TOKEN){
+                if(verifierNumericTermes() == false){
+                    afficherErreur(EXPECTED_NUMBER_TYPE);
+                }else{
+                    changerValSymbole(tableSymbole[dernierIndiceTS-1].nom, NUMVAL);
+                }
+            }
         }
     } else if (codeToken == NUM_TOKEN){
+        remplirAssignedValuesTable();
+        mettreajourValSymbole();
         ScannerLeMotSuivant();
         if (numeric_term()){
             printf("un simple calcul :) \n");
         }
     }
+    printf("--->aff\n");
     return true;
 }
 
-//value ::= numeric_term
-/*
-bool value(){
-    if (!numeric_term() && !function_call() && !other_term() && !function_stmt()) return false;
-    printf("---> value\n");
-    return true;
-}
-*/
 // numeric_term ::= [+|-] term { [ + | - ] term }*
 
 bool numeric_term(){
@@ -147,6 +283,9 @@ bool fact(){
             afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
         }
     } else if (codeToken == ID_TOKEN || codeToken == NUM_TOKEN){
+        if (codeToken == ID_TOKEN){
+            remplirTermesDeCalculs();
+        }
         ScannerLeMotSuivant();
     }
     printf("---> fact\n");
@@ -157,6 +296,8 @@ bool fact(){
 
 bool function_stmt(){
     if ( codeToken != FUNCTION_TOKEN) return false;
+    remplirAssignedValuesTable();
+    mettreajourValSymbole();
     ScannerLeMotSuivant();
     if ( codeToken != PO_TOKEN) {
         afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
@@ -170,6 +311,8 @@ bool function_stmt(){
         ScannerLeMotSuivant();
         if (codeToken != ID_TOKEN){
             afficherErreur(IDENTIFIER_EXPECTED_ERROR);
+        } else {
+            nombreArguments++;
         }
         ScannerLeMotSuivant();
     }
@@ -179,6 +322,12 @@ bool function_stmt(){
     ScannerLeMotSuivant();
     if (!function_body_stmt()){
         afficherErreur(FUNCTION_BODY_ERROR);
+    }
+    //enregistrer le nombre d'arguments
+    for (int i = 0; i < dernierIndiceTS ; i++) {
+        if( tableSymbole[i].valNom == FUNVAL){
+            tableSymbole[i].nombreArguments = nombreArguments;
+        }
     }
     printf("---> function_stmt\n");
     return true;
@@ -211,12 +360,12 @@ bool function_body_stmt(){
                 }
                 if (!single_input()){
                     if (!return_stmt()){
-                        printf("%d - %s", codeToken, mot);
+                       // printf("%d - %s", codeToken, mot);
                         afficherErreur(FUNCTION_BODY_ERROR);
                         //here is the problem
                     }
                 }
-                printf("%d - %s\n", codeToken, mot);
+               // printf("%d - %s\n", codeToken, mot);
             }
             //printf("%d - %s", codeToken, mot);
             if (codeToken == NEWLINE_TOKEN){
@@ -237,7 +386,7 @@ bool function_body_stmt(){
 
 bool return_stmt(){
     if (codeToken != RETURN_TOKEN) return false;
-    printf("%d - %s", codeToken, mot);
+  //  printf("%d - %s", codeToken, mot);
     ScannerLeMotSuivant();
     if (codeToken != PO_TOKEN){
         afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
@@ -257,7 +406,7 @@ bool return_stmt(){
 
 // print_stmt ::= 'print' '('[id {nmueric_term} | numeric_term]')'
 
-bool print_stmt(){
+bool print_stmt() {
     if ( codeToken != PRINT_TOKEN ) return false;
     else {
         ScannerLeMotSuivant();
@@ -266,15 +415,23 @@ bool print_stmt(){
         }
         ScannerLeMotSuivant();
         if (codeToken == ID_TOKEN){
+            //printf("%s\n",mot);
+            if(recupererValSymbole(mot) != NUMVAL){
+                afficherErreur(EXPECTED_NUMBER_TYPE);
+            }
             ScannerLeMotSuivant();
             if (numeric_term()){
                 //printf("%s", mot);
             }
-
+        }else{
+            if(!numeric_term()){
+                afficherErreur(NO_ARGUMENT_PRINT_ERROR);
+            }
         }
         if (numeric_term()) {
             printf("afficher un calcul 2");
         }
+
         //printf("%d - %s", codeToken, mot);
         if (codeToken != PF_TOKEN) {
             afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
@@ -291,19 +448,34 @@ bool function_call(){
    // printf("%s", mot);
     if (codeToken != PO_TOKEN)return false;
     ScannerLeMotSuivant();
+    //printf("%s\n", mot);
     if (codeToken != ID_TOKEN){
         afficherErreur(IDENTIFIER_EXPECTED_ERROR);
+    }else{
+        if(recupererValSymbole(mot) != NUMVAL){
+            afficherErreur(EXPECTED_NUMBER_TYPE);
+        }
     }
     ScannerLeMotSuivant();
     while( codeToken == VIR_TOKEN){
         ScannerLeMotSuivant();
         if (codeToken != ID_TOKEN){
             afficherErreur(IDENTIFIER_EXPECTED_ERROR);
+        } else {
+            nombreArgumentsCall++;
         }
         ScannerLeMotSuivant();
     }
     if (codeToken != PF_TOKEN){
         afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
+    }
+
+    for (int i = 0; i < dernierIndiceTS ; i++) {
+        if( tableSymbole[i].valNom == FUNVAL){
+            if (tableSymbole[i].nombreArguments != nombreArgumentsCall){
+                afficherErreur(ARGUMENT_NUMBER_ERROR);
+            }
+        }
     }
     ScannerLeMotSuivant();
     printf("---> function_call\n");
@@ -313,6 +485,8 @@ bool function_call(){
 // other_term ::= NA | TRUE | FALSE
 bool other_term(){
     if (codeToken != TRUE_TOKEN && codeToken != FALSE_TOKEN && codeToken != NA_TOKEN) return false;
+    remplirAssignedValuesTable();
+    mettreajourValSymbole();
     return true;
 }
 
@@ -358,7 +532,7 @@ bool if_stmt(){
     }
 
     if (codeToken != PF_TOKEN){
-        printf("%d - %s", codeToken, mot);
+  //      printf("%d - %s", codeToken, mot);
         afficherErreur(CLOSE_PARENTHESIS_TOKEN_ERROR);
     }
     ScannerLeMotSuivant();
@@ -419,7 +593,7 @@ bool if_body(){
         }
         //printf("%d - %s", codeToken, mot);
         ScannerLeMotSuivant();
-        printf("%d - %s", codeToken, mot);
+        //printf("%d - %s", codeToken, mot);
         /*while (codeToken == NEWLINE_TOKEN){
             ScannerLeMotSuivant();
         }*/
@@ -524,6 +698,8 @@ bool else_stmt(){
 //loop_body ::= '{' {\n}* program '}' | simple_stmt | BREAK
 bool while_stmt(){
     if (codeToken != WHILE_TOKEN) return false;
+    ajouterSymbole();
+    changerValSymbole(mot, BCLVAL);
     ScannerLeMotSuivant();
     if (codeToken != PO_TOKEN){
         afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
@@ -602,12 +778,12 @@ bool loop_body(){
         //------------------------------------------------
         if (codeToken != CURF_TOKEN){
             afficherErreur(CLOSE_CURLY_BRACKET_TOKEN_ERROR);
-            printf("%d - %s", codeToken, mot);
+          //  printf("%d - %s", codeToken, mot);
         }
         ScannerLeMotSuivant();
 
         printf("---> loop_body\n");
-        printf("%d - %s-", codeToken, mot);
+  //      printf("%d - %s-", codeToken, mot);
         return true;
     }
     printf("---> loop_body\n");
@@ -617,6 +793,8 @@ bool loop_body(){
 //repeat_stmt ::= 'repeat' loop_body
 bool repeat_stmt(){
     if (codeToken != REPEAT_TOKEN) return false;
+    ajouterSymbole();
+    changerValSymbole(mot, BCLVAL);
     ScannerLeMotSuivant();
     if (!loop_body()){
         afficherErreur(LOOP_BODY_ERROR);
@@ -629,6 +807,8 @@ bool repeat_stmt(){
 //for_stmt ::= 'for' '(' id 'in' [id|num] {:[id|num]} ')' loop_body
 bool for_stmt(){
     if (codeToken != FOR_TOKEN) return false;
+    ajouterSymbole();
+    changerValSymbole(mot, BCLVAL);
     ScannerLeMotSuivant();
     if (codeToken != PO_TOKEN){
         afficherErreur(OPEN_PARENTHESIS_TOKEN_ERROR);
@@ -668,6 +848,7 @@ bool for_stmt(){
 //condition_stmt ::= [id|num] { [== | !=] [id|num]} {[&&| ||] conditon_stmt} || '!' [id|num] {[&&| ||] conditon_stmt}
 bool condition_stmt(){
     if (codeToken != ID_TOKEN && codeToken != NUM_TOKEN && codeToken != LOGNOT_TOKEN) return false;
+
     else if (codeToken != LOGNOT_TOKEN){
         ScannerLeMotSuivant();
         if (codeToken == EQUAL_TOKEN || codeToken == DIFF_TOKEN){

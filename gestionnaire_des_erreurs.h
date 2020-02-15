@@ -5,7 +5,7 @@
 #ifndef UNTITLED1_GESTIONNAIRE_DES_ERREURS_H
 #define UNTITLED1_GESTIONNAIRE_DES_ERREURS_H
 
-#define NOMBRES_DES_ERREURS	18
+#define NOMBRES_DES_ERREURS	24
 
 #include "main.h"
 
@@ -27,7 +27,14 @@ typedef enum _error_codes {
     LOOP_BODY_ERROR,//14
     FUNCTION_BODY_ERROR,//15
     FACT_ERROR,//16
-    TERM_ERROR,//17
+    TERM_ERROR,
+    NO_ARGUMENT_PRINT_ERROR,//17
+    //semantic errors:
+    EXPECTED_NUMBER_TYPE,
+    FUNCTION_CALL_ERROR,
+    NO_VALUE_ERROR,
+    ARGUMENT_NUMBER_ERROR,//21
+    BREAK_ERROR,
 } code_erreur;
 
 

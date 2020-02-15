@@ -34,4 +34,32 @@ bool loop_body();
 bool for_stmt();
 bool condition_stmt();
 
+//symantic analysis:
+typedef enum {
+    NULLVAL, //0
+    NAVAL, //1
+    BOOLVAL, //2
+    NUMVAL,//3
+    FUNVAL,//4
+    BCLVAL,
+} TSYM;
+void ajouterSymbole();
+void changerValSymbole(char[],TSYM);
+void mettreajourValSymbole();
+void remplirAssignedValuesTable();
+void remplirTermesDeCalculs();
+TSYM recupererValSymbole(char[]);
+
+extern int dernierIndiceAssignedValuesTable;
+extern int dernierIndiceTermeDeCalcul;
+
+struct symbole {
+    char nom[MAX_SIZE];
+    TSYM valNom;
+    int nombreArguments;
+};
+
+struct symbole tableSymbole[100];
+extern int dernierIndiceTS;
+
 #endif //UNTITLED1_ANALYSEUR_SYNTAXIQUE_H

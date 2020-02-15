@@ -72,4 +72,7 @@ extern int dernierIndice;
 bool nouvLigne;
 
 CODES_LEX codeToken;
+
+
+extern int ligneNumero;
 #endif //UNTITLED1_MAIN_H

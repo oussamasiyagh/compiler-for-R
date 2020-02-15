@@ -69,6 +69,7 @@ bool estUnSeparateur(){
             //nouvLigne = false;
             return true;
         case '\n':
+            ligneNumero++;
             //it's a new line let's mark it it'll come in handy for the parser
             nouvLigne = true;
             return true;

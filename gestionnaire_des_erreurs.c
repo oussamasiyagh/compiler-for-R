@@ -22,13 +22,19 @@ char erreurs[NOMBRES_DES_ERREURS][90] = {
         "Loop content error",
         "FUNCTION statement body error",
         "Exepected FACT after '*' or '/'",
-        "Exepected TERM after '+' or '-'"};
+        "Exepected TERM after '+' or '-'",
+        "Expected an argument to print",
+        "Expected a number type object",
+        "a function call must be referenced to an existed function",
+        "object have no value",
+        "arguments numbre error",
+        "there is no loop to use BREAK"};
 
 void afficherErreur(code_erreur erreur) {
     if (erreur >= NOMBRES_DES_ERREURS){
-        printf("Error number %i: error without a message yet on line %i \n", erreur);
+        printf("Error number %i: error without a message \n", erreur);
     }
     else{
-        printf("Error number %i: %s on line \n", erreur, erreurs[erreur]);
+        printf("Error number %i: %s on line  %d\n", erreur, erreurs[erreur], ligneNumero);
     }
 }
